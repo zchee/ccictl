@@ -2,5 +2,5 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package v1 provide the CircleCI v1.1 API.
+// Package v1 provides the CircleCI v1.1 API.
 package v1
