@@ -42,6 +42,7 @@ var (
 	_ = htransport.NewClient
 )
 
+// API represents a CircleCI v2 API.
 type API struct {
 	s *Service
 }
@@ -673,8 +674,8 @@ func (c *ListWorkflowJobsCall) Do(ctx context.Context) (interface{}, error) {
 	return result, nil
 }
 
-// RerunWorkflowCall provides the rerun a workflow.
-type RerunWorkflowCall struct {
+// ReRunWorkflowCall provides the rerun a workflow.
+type ReRunWorkflowCall struct {
 	s      *Service
 	header http.Header
 	params url.Values
@@ -683,9 +684,9 @@ type RerunWorkflowCall struct {
 	id string
 }
 
-// RerunWorkflow returns the RerunWorkflowCall for rerun a workflow.
-func (r *API) RerunWorkflow(id string) *RerunWorkflowCall {
-	c := &RerunWorkflowCall{
+// ReRunWorkflow returns the RerunWorkflowCall for rerun a workflow.
+func (r *API) ReRunWorkflow(id string) *ReRunWorkflowCall {
+	c := &ReRunWorkflowCall{
 		s:      r.s,
 		header: make(http.Header),
 		params: url.Values{},
@@ -695,7 +696,7 @@ func (r *API) RerunWorkflow(id string) *RerunWorkflowCall {
 }
 
 // Do executes the RerunWorkflow.
-func (c *RerunWorkflowCall) Do(ctx context.Context) (interface{}, error) {
+func (c *ReRunWorkflowCall) Do(ctx context.Context) (interface{}, error) {
 	uri := path.Join(c.s.BasePath, "/workflow/"+fmt.Sprintf("%v", c.id)+"/rerun")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
