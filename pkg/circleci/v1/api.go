@@ -71,7 +71,7 @@ func (r *API) Me() *MeCall {
 }
 
 // Do executes the Me.
-func (c *MeCall) Do(ctx context.Context) (interface{}, error) {
+func (c *MeCall) Do(ctx context.Context) (*User, error) {
 	uri := path.Join(c.s.BasePath, "/me")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -99,16 +99,16 @@ func (c *MeCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result User
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
-// BuildSummaryCall represents a build summary for each of the last 30 builds for a single git repo.
-type BuildSummaryCall struct {
+// BuildCall represents a build summary for each of the last 30 builds for a single git repo.
+type BuildCall struct {
 	s      *Service
 	header http.Header
 	params url.Values
@@ -123,9 +123,9 @@ type BuildSummaryCall struct {
 	filter string
 }
 
-// BuildSummary returns the build summary for each of the last 30 builds for a single git repo.
-func (r *API) BuildSummary(username, project string) *BuildSummaryCall {
-	c := &BuildSummaryCall{
+// Build returns the build summary for each of the last 30 builds for a single git repo.
+func (r *API) Build(username, project string) *BuildCall {
+	c := &BuildCall{
 		s:        r.s,
 		header:   make(http.Header),
 		params:   url.Values{},
@@ -136,28 +136,28 @@ func (r *API) BuildSummary(username, project string) *BuildSummaryCall {
 }
 
 // Limit sets limit.
-func (c *BuildSummaryCall) Limit(limit int) *BuildSummaryCall {
+func (c *BuildCall) Limit(limit int) *BuildCall {
 	c.params.Add("limit", fmt.Sprintf("%v", limit))
 	c.limit = limit
 	return c
 }
 
 // Offset sets offset.
-func (c *BuildSummaryCall) Offset(offset int) *BuildSummaryCall {
+func (c *BuildCall) Offset(offset int) *BuildCall {
 	c.params.Add("offset", fmt.Sprintf("%v", offset))
 	c.offset = offset
 	return c
 }
 
 // Filter sets filter.
-func (c *BuildSummaryCall) Filter(filter string) *BuildSummaryCall {
+func (c *BuildCall) Filter(filter string) *BuildCall {
 	c.params.Add("filter", fmt.Sprintf("%v", filter))
 	c.filter = filter
 	return c
 }
 
-// Do executes the BuildSummary.
-func (c *BuildSummaryCall) Do(ctx context.Context) (interface{}, error) {
+// Do executes the Build.
+func (c *BuildCall) Do(ctx context.Context) (*Build, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -185,12 +185,12 @@ func (c *BuildSummaryCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Build
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // TriggerBuildAndSummaryCall represents a triggers a new build, and returns the summary of the build.
@@ -219,7 +219,7 @@ func (r *API) TriggerBuildAndSummary(username, project string, trigger *TriggerB
 }
 
 // Do executes the TriggerBuildAndSummary.
-func (c *TriggerBuildAndSummaryCall) Do(ctx context.Context) (interface{}, error) {
+func (c *TriggerBuildAndSummaryCall) Do(ctx context.Context) (*BuildSummary, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -256,12 +256,12 @@ func (c *TriggerBuildAndSummaryCall) Do(ctx context.Context) (interface{}, error
 		return nil, err
 	}
 
-	var result interface{}
+	var result BuildSummary
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // DeleteBuildCacheCall represents a clears the cache for a project.
@@ -288,7 +288,7 @@ func (r *API) DeleteBuildCache(username, project string) *DeleteBuildCacheCall {
 }
 
 // Do executes the DeleteBuildCache.
-func (c *DeleteBuildCacheCall) Do(ctx context.Context) (interface{}, error) {
+func (c *DeleteBuildCacheCall) Do(ctx context.Context) (*Response, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "build-cache")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -316,12 +316,12 @@ func (c *DeleteBuildCacheCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // ListCheckoutKeyCall represents a lists checkout keys.
@@ -348,7 +348,7 @@ func (r *API) ListCheckoutKey(username, project string) *ListCheckoutKeyCall {
 }
 
 // Do executes the ListCheckoutKey.
-func (c *ListCheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
+func (c *ListCheckoutKeyCall) Do(ctx context.Context) ([]*CheckoutKey, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "checkout-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -376,7 +376,7 @@ func (c *ListCheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result []*CheckoutKey
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
@@ -410,7 +410,7 @@ func (r *API) CreateCheckoutKey(username, project string) *CreateCheckoutKeyCall
 }
 
 // Do executes the CreateCheckoutKey.
-func (c *CreateCheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
+func (c *CreateCheckoutKeyCall) Do(ctx context.Context) (*CheckoutKey, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "checkout-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -438,12 +438,12 @@ func (c *CreateCheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result CheckoutKey
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // DeleteCheckoutKeyCall represents a delete a checkout key.
@@ -472,7 +472,7 @@ func (r *API) DeleteCheckoutKey(username, project, fingerprint string) *DeleteCh
 }
 
 // Do executes the DeleteCheckoutKey.
-func (c *DeleteCheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
+func (c *DeleteCheckoutKeyCall) Do(ctx context.Context) (*Response, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s/%s", c.username, c.project, c.fingerprint))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -500,12 +500,12 @@ func (c *DeleteCheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // CheckoutKeyCall represents a get a checkout key.
@@ -534,7 +534,7 @@ func (r *API) CheckoutKey(username, project, fingerprint string) *CheckoutKeyCal
 }
 
 // Do executes the CheckoutKey.
-func (c *CheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
+func (c *CheckoutKeyCall) Do(ctx context.Context) (*CheckoutKey, error) {
 	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s/checkout-key/%s", c.username, c.project, c.fingerprint))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -562,12 +562,12 @@ func (c *CheckoutKeyCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result CheckoutKey
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // ListProjectEnvVarsCall represents a lists the environment variables for project.
@@ -594,7 +594,7 @@ func (r *API) ListProjectEnvVars(username, project string) *ListProjectEnvVarsCa
 }
 
 // Do executes the ListProjectEnvVars.
-func (c *ListProjectEnvVarsCall) Do(ctx context.Context) (interface{}, error) {
+func (c *ListProjectEnvVarsCall) Do(ctx context.Context) ([]Envvar, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s", c.username, c.project), "envvar")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -622,7 +622,7 @@ func (c *ListProjectEnvVarsCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result []Envvar
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
@@ -654,7 +654,7 @@ func (r *API) CreateProjectEnvVar(username, project string) *CreateProjectEnvVar
 }
 
 // Do executes the CreateProjectEnvVar.
-func (c *CreateProjectEnvVarCall) Do(ctx context.Context) (interface{}, error) {
+func (c *CreateProjectEnvVarCall) Do(ctx context.Context) (*Envvar, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s", c.username, c.project), "envvar")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -682,12 +682,12 @@ func (c *CreateProjectEnvVarCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Envvar
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // DeleteEnvVarCall represents a deletes the environment variable named.
@@ -716,7 +716,7 @@ func (r *API) DeleteEnvVar(username, project, name string) *DeleteEnvVarCall {
 }
 
 // Do executes the DeleteEnvVar.
-func (c *DeleteEnvVarCall) Do(ctx context.Context) (interface{}, error) {
+func (c *DeleteEnvVarCall) Do(ctx context.Context) (*Response, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/envvar/%s", c.username, c.project, c.name))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -744,12 +744,12 @@ func (c *DeleteEnvVarCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // HiddenEnvVarCall represents a gets the hidden value of environment variable.
@@ -777,8 +777,8 @@ func (r *API) HiddenEnvVar(username, project, name string) *HiddenEnvVarCall {
 	return c
 }
 
-// Do executes the _Call.
-func (c *HiddenEnvVarCall) Do(ctx context.Context) (interface{}, error) {
+// Do executes the HiddenEnvVar.
+func (c *HiddenEnvVarCall) Do(ctx context.Context) (*Envvar, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%s", c.username, c.project, c.name))
 
 	if len(c.params) > 0 {
@@ -807,12 +807,12 @@ func (c *HiddenEnvVarCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Envvar
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // CreateSSHKeyCall represents a create an ssh key used to access external systems that require SSH key-based authentication.
@@ -841,7 +841,7 @@ func (r *API) CreateSSHKey(username, project string, sshKey SSHKey) *CreateSSHKe
 }
 
 // Do executes the CreateSSHKey.
-func (c *CreateSSHKeyCall) Do(ctx context.Context) (interface{}, error) {
+func (c *CreateSSHKeyCall) Do(ctx context.Context) (*Response, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s", c.username, c.project), "ssh-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -875,12 +875,12 @@ func (c *CreateSSHKeyCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // TriggerNewBuildCall represents a triggers a new build, returns a summary of the build.
@@ -921,7 +921,7 @@ func (c *TriggerNewBuildCall) Trigger(trigger *TriggerBuild) *TriggerNewBuildCal
 }
 
 // Do executes the TriggerNewBuild.
-func (c *TriggerNewBuildCall) Do(ctx context.Context) (interface{}, error) {
+func (c *TriggerNewBuildCall) Do(ctx context.Context) (*Build, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/tree/%s", c.username, c.project, c.branch))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -959,12 +959,12 @@ func (c *TriggerNewBuildCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Build
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // BuildDetailCall represents a full details for a single build. The response includes all of the fields from the build summary.
@@ -998,7 +998,7 @@ func (r *API) BuildDetail(username, project string, buildNum int) *BuildDetailCa
 }
 
 // Do executes the BuildDetail.
-func (c *BuildDetailCall) Do(ctx context.Context) (interface{}, error) {
+func (c *BuildDetailCall) Do(ctx context.Context) (*BuildDetail, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1026,12 +1026,12 @@ func (c *BuildDetailCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result BuildDetail
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // ListArtifactsCall represents a list the artifacts produced by a given build.
@@ -1060,7 +1060,7 @@ func (r *API) ListArtifacts(username, project string, buildNum int) *ListArtifac
 }
 
 // Do executes the ListArtifacts.
-func (c *ListArtifactsCall) Do(ctx context.Context) (interface{}, error) {
+func (c *ListArtifactsCall) Do(ctx context.Context) ([]Artifact, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "artifacts")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1088,7 +1088,7 @@ func (c *ListArtifactsCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result []Artifact
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
@@ -1122,7 +1122,7 @@ func (r *API) CancelBuild(username, project string, buildNum int) *CancelBuildCa
 }
 
 // Do executes the CancelBuild.
-func (c *CancelBuildCall) Do(ctx context.Context) (interface{}, error) {
+func (c *CancelBuildCall) Do(ctx context.Context) (*Build, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "cancel")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1150,12 +1150,12 @@ func (c *CancelBuildCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Build
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // RetryBuildCall represents a retries the build, returns a summary of the new build.
@@ -1184,7 +1184,7 @@ func (r *API) RetryBuild(username, project string, buildNum int) *RetryBuildCall
 }
 
 // Do executes the RetryBuild.
-func (c *RetryBuildCall) Do(ctx context.Context) (interface{}, error) {
+func (c *RetryBuildCall) Do(ctx context.Context) (*Build, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "retry")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1212,12 +1212,12 @@ func (c *RetryBuildCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Build
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // TestMetadataCall represents a provides test metadata for a build.
@@ -1246,7 +1246,7 @@ func (r *API) TestMetadata(username, project string, buildNum int) *TestMetadata
 }
 
 // Do executes the TestMetadata.
-func (c *TestMetadataCall) Do(ctx context.Context) (interface{}, error) {
+func (c *TestMetadataCall) Do(ctx context.Context) (*Tests, error) {
 	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "tests")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1274,12 +1274,12 @@ func (c *TestMetadataCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Tests
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
 
 // ListProjectCall represents a list of all the projects you're following on CircleCI, with build information organized by branch.
@@ -1300,7 +1300,7 @@ func (r *API) ListProject() *ListProjectCall {
 }
 
 // Do executes the ListProject.
-func (c *ListProjectCall) Do(ctx context.Context) (interface{}, error) {
+func (c *ListProjectCall) Do(ctx context.Context) ([]*Project, error) {
 	uri := path.Join(c.s.BasePath, "projects")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1328,7 +1328,7 @@ func (c *ListProjectCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result []*Project
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
@@ -1373,7 +1373,7 @@ func (c *RecentBuildsCall) Offset(offset int) *RecentBuildsCall {
 }
 
 // Do executes the RecentBuilds.
-func (c *RecentBuildsCall) Do(ctx context.Context) (interface{}, error) {
+func (c *RecentBuildsCall) Do(ctx context.Context) ([]*Build, error) {
 	uri := path.Join(c.s.BasePath, "recent-builds")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1401,7 +1401,7 @@ func (c *RecentBuildsCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result []*Build
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
@@ -1427,7 +1427,7 @@ func (r *API) AddHerokuKey() *AddHerokuKeyCall {
 }
 
 // Do executes the AddHerokuKey.
-func (c *AddHerokuKeyCall) Do(ctx context.Context) (interface{}, error) {
+func (c *AddHerokuKeyCall) Do(ctx context.Context) (*Response, error) {
 	uri := path.Join(c.s.BasePath, "user", "heroku-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -1455,10 +1455,10 @@ func (c *AddHerokuKeyCall) Do(ctx context.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	var result interface{}
+	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	return &result, nil
 }
