@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -21,6 +20,7 @@ import (
 	"strconv"
 	"strings"
 
+	json "github.com/goccy/go-json"
 	htransport "google.golang.org/api/transport/http"
 )
 
