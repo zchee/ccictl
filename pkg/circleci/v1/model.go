@@ -11,11 +11,6 @@ type TriggerBuildSummary struct {
 	Tag             string      `json:"tag,omitempty"`
 }
 
-type Envvar struct {
-	Name  string `json:"name,omitempty"`
-	Value string `json:"value,omitempty"`
-}
-
 type SSHKey struct {
 	HostName   string `json:"hostname"`
 	PrivateKey string `json:"private_key"`
