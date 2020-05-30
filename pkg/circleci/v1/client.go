@@ -57,6 +57,7 @@ const (
 // Service represents a V1 Services.
 type Service struct {
 	client    *http.Client
+	ctx       context.Context
 	BasePath  string // API endpoint base URL
 	UserAgent string // optional additional User-Agent fragment
 
@@ -70,7 +71,11 @@ func NewService(ctx context.Context) (*Service, error) {
 		return nil, err
 	}
 
-	svc := &Service{client: client, BasePath: basePath}
+	svc := &Service{
+		client:   client,
+		ctx:      ctx,
+		BasePath: basePath,
+	}
 	svc.API = New(svc)
 
 	return svc, nil
