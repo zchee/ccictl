@@ -107,7 +107,7 @@ func (c *MeCall) Do(ctx context.Context) (interface{}, error) {
 	return result, nil
 }
 
-// ProjectCall represents a build summary for each of the last 30 builds for a single git repo.
+// BuildSummaryCall represents a build summary for each of the last 30 builds for a single git repo.
 type BuildSummaryCall struct {
 	s      *Service
 	header http.Header

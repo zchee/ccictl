@@ -43,8 +43,11 @@ var (
 )
 
 const (
+	// APIVersion CircleCI REST API version.
 	APIVersion = "v1.1"
-	UserAgent  = "ccictl/" + APIVersion
+
+	// UserAgent is the default of user-agent.
+	UserAgent = "ccictl/" + APIVersion
 )
 
 const (
