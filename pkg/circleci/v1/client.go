@@ -10,18 +10,17 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strconv"
 	"strings"
-
-	json "github.com/goccy/go-json"
-	htransport "google.golang.org/api/transport/http"
 )
 
 // Always reference these packages, just in case the auto-generated code below doesn't.
@@ -39,7 +38,6 @@ var (
 	_ = path.Join
 	_ = strings.Replace
 	_ = gzip.NewReader
-	_ = htransport.NewClient
 )
 
 const (
@@ -56,7 +54,7 @@ const (
 
 // Service represents a V1 Services.
 type Service struct {
-	client    *http.Client
+	Client    *http.Client
 	ctx       context.Context
 	BasePath  string // API endpoint base URL
 	UserAgent string // optional additional User-Agent fragment
@@ -65,20 +63,23 @@ type Service struct {
 }
 
 // NewService creates a new V1 Service.
-func NewService(ctx context.Context) (*Service, error) {
-	client, _, err := htransport.NewClient(ctx)
-	if err != nil {
-		return nil, err
+func NewService(ctx context.Context, client *http.Client) *Service {
+	if client == nil {
+		client = &http.Client{}
 	}
-
+	uri, _ := url.Parse(basePath)
 	svc := &Service{
-		client:   client,
+		Client:   client,
 		ctx:      ctx,
-		BasePath: basePath,
+		BasePath: uri.String(),
 	}
-	svc.API = New(svc)
+	svc.API = NewAPI(svc)
 
-	return svc, nil
+	return svc
+}
+
+func (s *Service) Token() string {
+	return os.Getenv("CIRCLECI_TOKEN")
 }
 
 func (s *Service) userAgent() string {
