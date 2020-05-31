@@ -10,6 +10,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -20,7 +21,6 @@ import (
 	"strconv"
 	"strings"
 
-	json "github.com/goccy/go-json"
 	htransport "google.golang.org/api/transport/http"
 )
 
@@ -47,8 +47,8 @@ type API struct {
 	s *Service
 }
 
-// New returns the new API.
-func New(s *Service) *API {
+// NewAPI returns the new API.
+func NewAPI(s *Service) *API {
 	rs := &API{s: s}
 	return rs
 }
@@ -62,8 +62,10 @@ type MeCall struct {
 // Me returns the information about the signed in user.
 func (r *API) Me() *MeCall {
 	c := &MeCall{
-		s:      r.s,
-		params: url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 	}
 	return c
 }
@@ -76,7 +78,7 @@ func (c *MeCall) Context(ctx context.Context) *MeCall {
 
 // Do executes the Me.
 func (c *MeCall) Do() (*User, error) {
-	uri := path.Join(c.s.BasePath, "/me")
+	uri := c.s.BasePath + path.Join("/me")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -86,9 +88,10 @@ func (c *MeCall) Do() (*User, error) {
 		return nil, err
 	}
 
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("User-Agent", c.s.userAgent())
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -129,8 +132,10 @@ type BuildCall struct {
 // Build returns the build summary for each of the last 30 builds for a single git repo.
 func (r *API) Build(username, project string) *BuildCall {
 	c := &BuildCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 	}
@@ -166,7 +171,7 @@ func (c *BuildCall) Context(ctx context.Context) *BuildCall {
 
 // Do executes the Build.
 func (c *BuildCall) Do() (*Build, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project))
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s", c.username, c.project))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -177,9 +182,9 @@ func (c *BuildCall) Do() (*Build, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -216,8 +221,10 @@ type TriggerBuildAndSummaryCall struct {
 // TriggerBuildAndSummary triggers a new build, and returns the summary of the build.
 func (r *API) TriggerBuildAndSummary(username, project string, trigger *TriggerBuildSummary) *TriggerBuildAndSummaryCall {
 	c := &TriggerBuildAndSummaryCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		trigger:  trigger,
@@ -233,7 +240,7 @@ func (c *TriggerBuildAndSummaryCall) Context(ctx context.Context) *TriggerBuildA
 
 // Do executes the TriggerBuildAndSummary.
 func (c *TriggerBuildAndSummaryCall) Do() (*BuildSummary, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project))
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s", c.username, c.project))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -253,9 +260,9 @@ func (c *TriggerBuildAndSummaryCall) Do() (*BuildSummary, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -291,8 +298,10 @@ type DeleteBuildCacheCall struct {
 // DeleteBuildCache clears the cache for a project.
 func (r *API) DeleteBuildCache(username, project string) *DeleteBuildCacheCall {
 	c := &DeleteBuildCacheCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 	}
@@ -307,7 +316,7 @@ func (c *DeleteBuildCacheCall) Context(ctx context.Context) *DeleteBuildCacheCal
 
 // Do executes the DeleteBuildCache.
 func (c *DeleteBuildCacheCall) Do() (*Response, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "build-cache")
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "build-cache")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -318,9 +327,9 @@ func (c *DeleteBuildCacheCall) Do() (*Response, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -356,8 +365,10 @@ type ListCheckoutKeyCall struct {
 // ListCheckoutKey lists checkout keys.
 func (r *API) ListCheckoutKey(username, project string) *ListCheckoutKeyCall {
 	c := &ListCheckoutKeyCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 	}
@@ -372,7 +383,7 @@ func (c *ListCheckoutKeyCall) Context(ctx context.Context) *ListCheckoutKeyCall 
 
 // Do executes the ListCheckoutKey.
 func (c *ListCheckoutKeyCall) Do() ([]*CheckoutKey, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "checkout-key")
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "checkout-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -383,9 +394,9 @@ func (c *ListCheckoutKeyCall) Do() ([]*CheckoutKey, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -423,8 +434,10 @@ type CreateCheckoutKeyCall struct {
 // Only usable with a user API token.
 func (r *API) CreateCheckoutKey(username, project string) *CreateCheckoutKeyCall {
 	c := &CreateCheckoutKeyCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 	}
@@ -439,7 +452,7 @@ func (c *CreateCheckoutKeyCall) Context(ctx context.Context) *CreateCheckoutKeyC
 
 // Do executes the CreateCheckoutKey.
 func (c *CreateCheckoutKeyCall) Do() (*CheckoutKey, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "checkout-key")
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s", c.username, c.project), "checkout-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -450,9 +463,9 @@ func (c *CreateCheckoutKeyCall) Do() (*CheckoutKey, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -489,8 +502,10 @@ type DeleteCheckoutKeyCall struct {
 // DeleteCheckoutKey delete a checkout key.
 func (r *API) DeleteCheckoutKey(username, project, fingerprint string) *DeleteCheckoutKeyCall {
 	c := &DeleteCheckoutKeyCall{
-		s:           r.s,
-		params:      url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username:    username,
 		project:     project,
 		fingerprint: fingerprint,
@@ -506,7 +521,7 @@ func (c *DeleteCheckoutKeyCall) Context(ctx context.Context) *DeleteCheckoutKeyC
 
 // Do executes the DeleteCheckoutKey.
 func (c *DeleteCheckoutKeyCall) Do() (*Response, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s/%s", c.username, c.project, c.fingerprint))
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s/%s", c.username, c.project, c.fingerprint))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -517,9 +532,9 @@ func (c *DeleteCheckoutKeyCall) Do() (*Response, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -556,8 +571,10 @@ type CheckoutKeyCall struct {
 // CheckoutKey get a checkout key.
 func (r *API) CheckoutKey(username, project, fingerprint string) *CheckoutKeyCall {
 	c := &CheckoutKeyCall{
-		s:           r.s,
-		params:      url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username:    username,
 		project:     project,
 		fingerprint: fingerprint,
@@ -573,7 +590,7 @@ func (c *CheckoutKeyCall) Context(ctx context.Context) *CheckoutKeyCall {
 
 // Do executes the CheckoutKey.
 func (c *CheckoutKeyCall) Do() (*CheckoutKey, error) {
-	uri := path.Join(c.s.BasePath, "/project/"+fmt.Sprintf("%s/%s/checkout-key/%s", c.username, c.project, c.fingerprint))
+	uri := c.s.BasePath + path.Join("/project/"+fmt.Sprintf("%s/%s/checkout-key/%s", c.username, c.project, c.fingerprint))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -584,9 +601,9 @@ func (c *CheckoutKeyCall) Do() (*CheckoutKey, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -622,8 +639,10 @@ type ListProjectEnvVarsCall struct {
 // ListProjectEnvVars lists the environment variables for project.
 func (r *API) ListProjectEnvVars(username, project string) *ListProjectEnvVarsCall {
 	c := &ListProjectEnvVarsCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 	}
@@ -638,7 +657,7 @@ func (c *ListProjectEnvVarsCall) Context(ctx context.Context) *ListProjectEnvVar
 
 // Do executes the ListProjectEnvVars.
 func (c *ListProjectEnvVarsCall) Do() ([]Envvar, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s", c.username, c.project), "envvar")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s", c.username, c.project), "envvar")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -649,9 +668,9 @@ func (c *ListProjectEnvVarsCall) Do() ([]Envvar, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -687,8 +706,10 @@ type CreateProjectEnvVarCall struct {
 // CreateProjectEnvVar creates a new environment variable.
 func (r *API) CreateProjectEnvVar(username, project string) *CreateProjectEnvVarCall {
 	c := &CreateProjectEnvVarCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 	}
@@ -703,7 +724,7 @@ func (c *CreateProjectEnvVarCall) Context(ctx context.Context) *CreateProjectEnv
 
 // Do executes the CreateProjectEnvVar.
 func (c *CreateProjectEnvVarCall) Do() (*Envvar, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s", c.username, c.project), "envvar")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s", c.username, c.project), "envvar")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -714,9 +735,9 @@ func (c *CreateProjectEnvVarCall) Do() (*Envvar, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -753,8 +774,10 @@ type DeleteEnvVarCall struct {
 // DeleteEnvVar deletes the environment variable named.
 func (r *API) DeleteEnvVar(username, project, name string) *DeleteEnvVarCall {
 	c := &DeleteEnvVarCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		name:     name,
@@ -770,7 +793,7 @@ func (c *DeleteEnvVarCall) Context(ctx context.Context) *DeleteEnvVarCall {
 
 // Do executes the DeleteEnvVar.
 func (c *DeleteEnvVarCall) Do() (*Response, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/envvar/%s", c.username, c.project, c.name))
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/envvar/%s", c.username, c.project, c.name))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -781,9 +804,9 @@ func (c *DeleteEnvVarCall) Do() (*Response, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -820,8 +843,10 @@ type HiddenEnvVarCall struct {
 // HiddenEnvVar gets the hidden value of environment variable.
 func (r *API) HiddenEnvVar(username, project, name string) *HiddenEnvVarCall {
 	c := &HiddenEnvVarCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		name:     name,
@@ -837,7 +862,7 @@ func (c *HiddenEnvVarCall) Context(ctx context.Context) *HiddenEnvVarCall {
 
 // Do executes the HiddenEnvVar.
 func (c *HiddenEnvVarCall) Do() (*Envvar, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%s", c.username, c.project, c.name))
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/%s", c.username, c.project, c.name))
 
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
@@ -849,9 +874,9 @@ func (c *HiddenEnvVarCall) Do() (*Envvar, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -888,8 +913,10 @@ type CreateSSHKeyCall struct {
 // CreateSSHKey create an ssh key used to access external systems that require SSH key-based authentication.
 func (r *API) CreateSSHKey(username, project string, sshKey SSHKey) *CreateSSHKeyCall {
 	c := &CreateSSHKeyCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		sshKey:   sshKey,
@@ -905,7 +932,7 @@ func (c *CreateSSHKeyCall) Context(ctx context.Context) *CreateSSHKeyCall {
 
 // Do executes the CreateSSHKey.
 func (c *CreateSSHKeyCall) Do() (*Response, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s", c.username, c.project), "ssh-key")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s", c.username, c.project), "ssh-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -922,9 +949,9 @@ func (c *CreateSSHKeyCall) Do() (*Response, error) {
 
 	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -964,8 +991,10 @@ type TriggerNewBuildCall struct {
 // TriggerNewBuild triggers a new build, returns a summary of the build.
 func (r *API) TriggerNewBuild(username, project, branch string) *TriggerNewBuildCall {
 	c := &TriggerNewBuildCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		branch:   branch,
@@ -990,7 +1019,7 @@ func (c *TriggerNewBuildCall) Trigger(trigger *TriggerBuild) *TriggerNewBuildCal
 
 // Do executes the TriggerNewBuild.
 func (c *TriggerNewBuildCall) Do() (*Build, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/tree/%s", c.username, c.project, c.branch))
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/tree/%s", c.username, c.project, c.branch))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1011,9 +1040,9 @@ func (c *TriggerNewBuildCall) Do() (*Build, error) {
 
 	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1055,8 +1084,10 @@ type BuildDetailCall struct {
 // This is also the payload for the notification webhooks, in which case this object is the value to a key named 'payload'.
 func (r *API) BuildDetail(username, project string, buildNum int) *BuildDetailCall {
 	c := &BuildDetailCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		buildNum: buildNum,
@@ -1072,7 +1103,7 @@ func (c *BuildDetailCall) Context(ctx context.Context) *BuildDetailCall {
 
 // Do executes the BuildDetail.
 func (c *BuildDetailCall) Do() (*BuildDetail, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum))
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum))
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1083,9 +1114,9 @@ func (c *BuildDetailCall) Do() (*BuildDetail, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1122,8 +1153,10 @@ type ListArtifactsCall struct {
 // ListArtifacts list the artifacts produced by a given build.
 func (r *API) ListArtifacts(username, project string, buildNum int) *ListArtifactsCall {
 	c := &ListArtifactsCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		buildNum: buildNum,
@@ -1139,7 +1172,7 @@ func (c *ListArtifactsCall) Context(ctx context.Context) *ListArtifactsCall {
 
 // Do executes the ListArtifacts.
 func (c *ListArtifactsCall) Do() ([]Artifact, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "artifacts")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "artifacts")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1150,9 +1183,9 @@ func (c *ListArtifactsCall) Do() ([]Artifact, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1189,8 +1222,10 @@ type CancelBuildCall struct {
 // CancelBuild cancels the build, returns a summary of the build.
 func (r *API) CancelBuild(username, project string, buildNum int) *CancelBuildCall {
 	c := &CancelBuildCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		buildNum: buildNum,
@@ -1206,7 +1241,7 @@ func (c *CancelBuildCall) Context(ctx context.Context) *CancelBuildCall {
 
 // Do executes the CancelBuild.
 func (c *CancelBuildCall) Do() (*Build, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "cancel")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "cancel")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1217,9 +1252,9 @@ func (c *CancelBuildCall) Do() (*Build, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1256,8 +1291,10 @@ type RetryBuildCall struct {
 // RetryBuild retries the build, returns a summary of the new build.
 func (r *API) RetryBuild(username, project string, buildNum int) *RetryBuildCall {
 	c := &RetryBuildCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		buildNum: buildNum,
@@ -1273,7 +1310,7 @@ func (c *RetryBuildCall) Context(ctx context.Context) *RetryBuildCall {
 
 // Do executes the RetryBuild.
 func (c *RetryBuildCall) Do() (*Build, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "retry")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "retry")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1284,9 +1321,9 @@ func (c *RetryBuildCall) Do() (*Build, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1323,8 +1360,10 @@ type TestMetadataCall struct {
 // TestMetadata provides test metadata for a build.
 func (r *API) TestMetadata(username, project string, buildNum int) *TestMetadataCall {
 	c := &TestMetadataCall{
-		s:        r.s,
-		params:   url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 		username: username,
 		project:  project,
 		buildNum: buildNum,
@@ -1340,7 +1379,7 @@ func (c *TestMetadataCall) Context(ctx context.Context) *TestMetadataCall {
 
 // Do executes the TestMetadata.
 func (c *TestMetadataCall) Do() (*Tests, error) {
-	uri := path.Join(c.s.BasePath, "project", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "tests")
+	uri := c.s.BasePath + path.Join("/project/", fmt.Sprintf("%s/%s/%d", c.username, c.project, c.buildNum), "tests")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1351,9 +1390,9 @@ func (c *TestMetadataCall) Do() (*Tests, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1385,8 +1424,10 @@ type ListProjectCall struct {
 // ListProject list of all the projects you're following on CircleCI, with build information organized by branch.
 func (r *API) ListProject() *ListProjectCall {
 	c := &ListProjectCall{
-		s:      r.s,
-		params: url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 	}
 	return c
 }
@@ -1399,7 +1440,7 @@ func (c *ListProjectCall) Context(ctx context.Context) *ListProjectCall {
 
 // Do executes the ListProject.
 func (c *ListProjectCall) Do() ([]*Project, error) {
-	uri := path.Join(c.s.BasePath, "projects")
+	uri := c.s.BasePath + path.Join("/projects")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1410,9 +1451,9 @@ func (c *ListProjectCall) Do() ([]*Project, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1448,9 +1489,11 @@ type RecentBuildsCall struct {
 // RecentBuilds build summary for each of the last 30 recent builds, ordered by build_num.
 func (r *API) RecentBuilds() *RecentBuildsCall {
 	c := &RecentBuildsCall{
-		s:      r.s,
-		params: url.Values{},
-		limit:  30, // limit is 30 by default
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
+		limit: 30, // limit is 30 by default
 	}
 	return c
 }
@@ -1477,7 +1520,7 @@ func (c *RecentBuildsCall) Context(ctx context.Context) *RecentBuildsCall {
 
 // Do executes the RecentBuilds.
 func (c *RecentBuildsCall) Do() ([]*Build, error) {
-	uri := path.Join(c.s.BasePath, "recent-builds")
+	uri := c.s.BasePath + path.Join("/recent-builds")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1488,9 +1531,9 @@ func (c *RecentBuildsCall) Do() ([]*Build, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
@@ -1522,8 +1565,10 @@ type AddHerokuKeyCall struct {
 // AddHerokuKey adds your Heroku API key to CircleCI, takes apikey as form param name.
 func (r *API) AddHerokuKey() *AddHerokuKeyCall {
 	c := &AddHerokuKeyCall{
-		s:      r.s,
-		params: url.Values{},
+		s: r.s,
+		params: url.Values{
+			"circle-token": []string{r.s.Token()},
+		},
 	}
 	return c
 }
@@ -1536,7 +1581,7 @@ func (c *AddHerokuKeyCall) Context(ctx context.Context) *AddHerokuKeyCall {
 
 // Do executes the AddHerokuKey.
 func (c *AddHerokuKeyCall) Do() (*Response, error) {
-	uri := path.Join(c.s.BasePath, "user", "heroku-key")
+	uri := c.s.BasePath + path.Join("/user", "heroku-key")
 	if len(c.params) > 0 {
 		uri += "?" + c.params.Encode()
 	}
@@ -1547,9 +1592,9 @@ func (c *AddHerokuKeyCall) Do() (*Response, error) {
 	}
 
 	req.Header.Set("User-Agent", c.s.userAgent())
-	req.Header.Set("Accept-Encoding", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-	resp, err := c.s.client.Do(req)
+	resp, err := c.s.Client.Do(req)
 	if err != nil {
 		select {
 		case <-c.s.ctx.Done():
