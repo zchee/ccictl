@@ -5,8 +5,6 @@
 package v1
 
 import (
-	"encoding/json"
-	"fmt"
 	"time"
 )
 
@@ -20,29 +18,82 @@ type Artifact struct {
 
 // Build represents a Build.
 type Build struct {
-	// Body commit message body
-	Body            string         `json:"body,omitempty"`
-	Branch          string         `json:"branch,omitempty"`
-	BuildTimeMillis int32          `json:"build_time_millis,omitempty"`
-	BuildURL        string         `json:"build_url,omitempty"`
-	CommitterEmail  string         `json:"committer_email,omitempty"`
-	CommitterName   string         `json:"committer_name,omitempty"`
-	DontBuild       string         `json:"dont_build,omitempty"`
-	Lifecycle       Lifecycle      `json:"lifecycle,omitempty"`
-	Previous        *PreviousBuild `json:"previous,omitempty"`
-	// QueuedAt time build was queued
-	QueuedAt time.Time `json:"queued_at,omitempty"`
-	Reponame string    `json:"reponame,omitempty"`
-	RetryOf  int32     `json:"retry_of,omitempty"`
-	// StartTime time build started
-	StartTime time.Time `json:"start_time,omitempty"`
-	// StopTime time build finished
-	StopTime time.Time `json:"stop_time,omitempty"`
-	Subject  string    `json:"subject,omitempty"`
-	Username string    `json:"username,omitempty"`
-	VCSURL   string    `json:"vcs_url,omitempty"`
-	// Why short string explaining the reason we built
-	Why string `json:"why,omitempty"`
+	AllCommitDetails          []*CommitDetail        `json:"all_commit_details"`
+	AllCommitDetailsTruncated bool                   `json:"all_commit_details_truncated"`
+	AuthorDate                time.Time              `json:"author_date"`
+	AuthorEmail               string                 `json:"author_email"`
+	AuthorName                string                 `json:"author_name"`
+	Body                      string                 `json:"body,omitempty"`
+	Branch                    string                 `json:"branch"`
+	BuildNumber               int                    `json:"build_num"`
+	BuildParameters           map[string]interface{} `json:"build_parameters,omitempty"`
+	BuildTimeMillis           int32                  `json:"build_time_millis"`
+	BuildURL                  string                 `json:"build_url"`
+	Canceled                  bool                   `json:"canceled"`
+	Canceler                  string                 `json:"canceler,omitempty"`
+	CircleYAML                string                 `json:"circle_yml,omitempty"`
+	CommitterDate             time.Time              `json:"committer_date"`
+	CommitterEmail            string                 `json:"committer_email"`
+	CommitterName             string                 `json:"committer_name"`
+	Compare                   string                 `json:"compare,omitempty"`
+	ContextIDs                []string               `json:"context_ids,omitempty"`
+	DontBuild                 string                 `json:"dont_build,omitempty"`
+	Failed                    bool                   `json:"failed"`
+	FailReason                string                 `json:"fail_reason,omitempty"`
+	HasArtifacts              bool                   `json:"has_artifacts"`
+	InfrastructureFail        bool                   `json:"infrastructure_fail"`
+	IsFirstGreenBuild         bool                   `json:"is_first_green_build"`
+	JobName                   string                 `json:"job_name,omitempty"`
+	Lifecycle                 Lifecycle              `json:"lifecycle"`
+	Message                   string                 `json:"message,omitempty"`
+	Node                      string                 `json:"node,omitempty"`
+	NoDependencyCache         bool                   `json:"no_dependency_cache"`
+	Organization              string                 `json:"username"`
+	OSS                       bool                   `json:"oss"`
+	Outcome                   Outcome                `json:"outcome,omitempty"`
+	Parallel                  int32                  `json:"parallel,omitempty"`
+	Picard                    string                 `json:"picard,omitempty"`
+	Platform                  string                 `json:"platform"`
+	PreviousBuild             *PreviousBuild         `json:"previous"`
+	PreviousSuccessfulBuild   bool                   `json:"previous_successful_build"`
+	QueuedAt                  time.Time              `json:"queued_at"`
+	RepoName                  string                 `json:"reponame"`
+	Retries                   string                 `json:"retries,omitempty"`
+	RetryOf                   int32                  `json:"retry_of"`
+	SSHDisable                bool                   `json:"ssh_disabled"`
+	SSHUesrs                  []string               `json:"ssh_uesrs,omitempty"`
+	StartTime                 time.Time              `json:"start_time"`
+	Status                    string                 `json:"status,omitempty"`
+	StopTime                  time.Time              `json:"stop_time"`
+	Subject                   string                 `json:"subject"`
+	Timedout                  bool                   `json:"timedout"`
+	UsageQueuedAt             time.Time              `json:"usage_queued_at,omitempty"`
+	User                      *BuildUser             `json:"user,omitempty"`
+	VCSRevision               string                 `json:"vcs_revision,omitempty"`
+	VCSTag                    string                 `json:"vcs_tag,omitempty"`
+	VCSType                   string                 `json:"vcs_type"`
+	VCSURL                    string                 `json:"vcs_url"`
+	Why                       string                 `json:"why"`
+	Workflows                 *Workflows             `json:"workflows"`
+}
+
+type BuildUser struct {
+	AvatarURL string `json:"avatar_url"`
+	ID        int32  `json:"id"`
+	IsUser    bool   `json:"is_user"`
+	Login     string `json:"login"`
+	Name      string `json:"name"`
+	VCSType   string `json:"vcs_type"`
+}
+
+type Workflows struct {
+	JobID                     string                 `json:"job_id"`
+	JobName                   string                 `json:"job_name"`
+	UpstreamConcurrencyMapmap map[string]interface{} `json:"upstream_concurrency_map"`
+	UpstreamJobIDs            []string               `json:"upstream_job_ids"`
+	WorkflowID                string                 `json:"workflow_id"`
+	WorkflowName              string                 `json:"workflow_name"`
+	WorkspaceID               string                 `json:"workspace_id"`
 }
 
 // BuildDetail previous build
@@ -58,7 +109,7 @@ type BuildDetail struct {
 type BuildSummary struct {
 	AddedAt     time.Time `json:"added_at,omitempty"`
 	BuildNum    int32     `json:"build_num,omitempty"`
-	Outcome     *Outcome  `json:"outcome,omitempty"`
+	Outcome     Outcome   `json:"outcome,omitempty"`
 	PushedAt    time.Time `json:"pushed_at,omitempty"`
 	Status      *Status   `json:"status,omitempty"`
 	VCSRevision string    `json:"vcs_revision,omitempty"`
@@ -98,98 +149,29 @@ type CheckoutKey struct {
 }
 
 // Lifecycle the model 'Lifecycle'
-type Lifecycle uint8
+type Lifecycle string
 
-// List of Lifecycle
 const (
-	LifecycleQueued     = Lifecycle(1) + iota // "queued"
-	LifecycleScheduled                        // "scheduled"
-	LifecycleNotRun                           // "not_run"
-	LifecycleNotRunning                       // "not_running"
-	LifecycleRunning                          // "running"
-	LifecycleFinished                         // "finished"
-	lifecycleEnd
+	LifecycleQueued     Lifecycle = "queued"
+	LifecycleScheduled  Lifecycle = "scheduled"
+	LifecycleNotRun     Lifecycle = "not_run"
+	LifecycleNotRunning Lifecycle = "not_running"
+	LifecycleRunning    Lifecycle = "running"
+	LifecycleFinished   Lifecycle = "finished"
 )
 
-func (v Lifecycle) String() string {
-	switch v {
-	case LifecycleQueued:
-		return "queued"
-	case LifecycleScheduled:
-		return "scheduled"
-	case LifecycleNotRun:
-		return "not_run"
-	case LifecycleNotRunning:
-		return "not_running"
-	case LifecycleRunning:
-		return "running"
-	case LifecycleFinished:
-		return "finished"
-	default:
-		return ""
-	}
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (v *Lifecycle) UnmarshalJSON(src []byte) error {
-	var i Lifecycle
-	err := json.Unmarshal(src, &i)
-	if err != nil {
-		return err
-	}
-	if lifecycleEnd >= i {
-		return fmt.Errorf("%+v is not a valid Lifecycle", i)
-	}
-	*v = i
-	return nil
-}
-
 // Outcome the model 'Outcome'
-type Outcome uint8
+type Outcome string
 
 // List of Outcome
 const (
-	OutcomeCanceled           = Outcome(1) + iota // "canceled"
-	OutcomeInfrastructureFail                     // "infrastructure_fail"
-	OutcomeTimedout                               // "timedout"
-	OutcomeFailed                                 // "failed"
-	OutcomeNoTests                                // "no_tests"
-	OutcomeSuccess                                // "success"
-	outcomeEnd
+	OutcomeCanceled           Outcome = "canceled"
+	OutcomeInfrastructureFail Outcome = "infrastructure_fail"
+	OutcomeTimedout           Outcome = "timedout"
+	OutcomeFailed             Outcome = "failed"
+	OutcomeNoTests            Outcome = "no_tests"
+	OutcomeSuccess            Outcome = "success"
 )
-
-func (v Outcome) String() string {
-	switch v {
-	case OutcomeCanceled:
-		return "canceled"
-	case OutcomeInfrastructureFail:
-		return "infrastructure_fail"
-	case OutcomeTimedout:
-		return "timedout"
-	case OutcomeFailed:
-		return "failed"
-	case OutcomeNoTests:
-		return "no_tests"
-	case OutcomeSuccess:
-		return "success"
-	default:
-		return ""
-	}
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (v *Outcome) UnmarshalJSON(src []byte) error {
-	var i Outcome
-	err := json.Unmarshal(src, &i)
-	if err != nil {
-		return err
-	}
-	if outcomeEnd >= i {
-		return fmt.Errorf("%+v is not a valid Outcome", i)
-	}
-	*v = i
-	return nil
-}
 
 // PreviousBuild previous build
 type PreviousBuild struct {
@@ -260,54 +242,18 @@ type Response struct {
 }
 
 // Scope the model Scope
-type Scope uint8
+type Scope string
 
 // List of Scope
 const (
-	ScopeWriteSettings = Scope(1) + iota // "write-settings"
-	ScopeViewBuilds                      // "view-builds"
-	ScopeReadSettings                    // "read-settings"
-	ScopeTriggeRBuilds                   // "trigger-builds"
-	ScopeAll                             // "all"
-	ScopeStatus                          // "status"
-	ScopeNone                            // "none"
-	scopeEnd
+	ScopeWriteSettings Scope = "write-settings"
+	ScopeViewBuilds    Scope = "view-builds"
+	ScopeReadSettings  Scope = "read-settings"
+	ScopeTriggeRBuilds Scope = "trigger-builds"
+	ScopeAll           Scope = "all"
+	ScopeStatus        Scope = "status"
+	ScopeNone          Scope = "none"
 )
-
-func (v Scope) String() string {
-	switch v {
-	case ScopeWriteSettings:
-		return "write-settings"
-	case ScopeViewBuilds:
-		return "view-builds"
-	case ScopeReadSettings:
-		return "read-settings"
-	case ScopeTriggeRBuilds:
-		return "trigger-builds"
-	case ScopeAll:
-		return "all"
-	case ScopeStatus:
-		return "status"
-	case ScopeNone:
-		return "none"
-	default:
-		return ""
-	}
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (v *Scope) UnmarshalJSON(src []byte) error {
-	var i Scope
-	err := json.Unmarshal(src, &i)
-	if err != nil {
-		return err
-	}
-	if scopeEnd >= i {
-		return fmt.Errorf("%+v is not a valid Scope", i)
-	}
-	*v = i
-	return nil
-}
 
 // SSHKey represents a ssh hostname and privatekey pair.
 type SSHKey struct {
@@ -316,70 +262,25 @@ type SSHKey struct {
 }
 
 // Status the model Status
-type Status uint8
+type Status string
 
 // List of Status
 const (
-	StatusRetried            = Status(1) + iota // "retried"
-	StatusCanceled                              // "canceled"
-	StatusInfrastructureFail                    // "infrastructure_fail"
-	StatusTimeout                               // "timedout"
-	StatusNotRun                                // "not_run"
-	StatusRunning                               // "running"
-	StatusFailed                                // "failed"
-	StatusQueued                                // "queued"
-	StatusScheduled                             // "scheduled"
-	StatusNotRunning                            // "not_running"
-	StatusNoTests                               // "no_tests"
-	StatusFixed                                 // "fixed"
-	StatusSuccess                               // "success"
+	StatusRetried            Status = "retried"
+	StatusCanceled           Status = "canceled"
+	StatusInfrastructureFail Status = "infrastructure_fail"
+	StatusTimeout            Status = "timedout"
+	StatusNotRun             Status = "not_run"
+	StatusRunning            Status = "running"
+	StatusFailed             Status = "failed"
+	StatusQueued             Status = "queued"
+	StatusScheduled          Status = "scheduled"
+	StatusNotRunning         Status = "not_running"
+	StatusNoTests            Status = "no_tests"
+	StatusFixed              Status = "fixed"
+	StatusSuccess            Status = "success"
 	statusEnd
 )
-
-func (v Status) String() string {
-	switch v {
-	case StatusRetried:
-		return "queued"
-	case StatusCanceled:
-		return "scheduled"
-	case StatusInfrastructureFail:
-		return "not_run"
-	case StatusNotRun:
-		return "not_running"
-	case StatusRunning:
-		return "running"
-	case StatusFailed:
-		return "finished"
-	case StatusQueued:
-		return "finished"
-	case StatusScheduled:
-		return "finished"
-	case StatusNotRunning:
-		return "finished"
-	case StatusNoTests:
-		return "finished"
-	case StatusFixed:
-		return "finished"
-	case StatusSuccess:
-		return "finished"
-	default:
-		return ""
-	}
-}
-
-// UnmarshalJSON implements json.Unmarshaler.
-func (v *Status) UnmarshalJSON(src []byte) error {
-	var i Status
-	err := json.Unmarshal(src, &i)
-	if err != nil {
-		return err
-	}
-	if statusEnd >= i {
-		return fmt.Errorf("%+v is not a valid Status", i)
-	}
-	*v = i
-	return nil
-}
 
 // Test represents a Test.
 type Test struct {
@@ -387,7 +288,7 @@ type Test struct {
 	File      string  `json:"file,omitempty"`
 	Message   string  `json:"message,omitempty"`
 	Name      string  `json:"name,omitempty"`
-	Result    *Status `json:"result,omitempty"`
+	Result    Status  `json:"result,omitempty"`
 	RunTime   float32 `json:"run_time,omitempty"`
 	Source    string  `json:"source,omitempty"`
 }
