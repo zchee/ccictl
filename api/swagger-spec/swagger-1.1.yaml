@@ -8,22 +8,7 @@ info:
     The CircleCI API is a RESTful, fully-featured API that allows you to do almost anything in CircleCI.
     You can access all information and trigger all actions.
     The only thing we don’t provide access to is billing functions, which must be done from the CircleCI web UI.
-  license:
-    name: Attribution-NonCommercial-ShareAlike 4.0 International
-    url: 'http://creativecommons.org/licenses/by-nc-sa/4.0/'
   title: CircleCI
-  version: v1
-  x-apisguru-categories:
-    - developer_tools
-  x-logo:
-    url: 'https://api.apis.guru/v2/cache/logo/https_avatars0.githubusercontent.com_u_1231870.png'
-  x-origin:
-    - format: swagger
-      url: 'https://raw.githubusercontent.com/blockenio/spec-circleci/master/swagger.yml'
-      version: '2.0'
-  x-preferred: true
-  x-providerName: circleci.com
-  x-unofficialSpec: true
 produces:
   - application/json
 securityDefinitions:
@@ -468,9 +453,7 @@ definitions:
   Aws:
     properties:
       keypair:
-        type:
-          - string
-          - 'null'
+        type: string
     type: object
   Build:
     properties:
@@ -491,9 +474,7 @@ definitions:
         type: string
       dont_build:
         description: 'reason why we didn''t build, if we didn''t build'
-        type:
-          - string
-          - 'null'
+        type: string
       lifecycle:
         $ref: '#/definitions/Lifecycle'
       previous:
@@ -506,9 +487,7 @@ definitions:
         type: string
       retry_of:
         description: build_num of the build this is a retry of
-        type:
-          - integer
-          - 'null'
+        type: integer
       start_time:
         description: time build started
         format: date-time
@@ -535,27 +514,19 @@ definitions:
         $ref: '#/definitions/CommitDetails'
       compare:
         format: uri
-        type:
-          - string
-          - 'null'
+        type: string
       job_name:
         type: string
       node:
-        type: 'null'
+        type: object
       previous_successful_build:
         $ref: '#/definitions/PreviousBuild'
       retries:
-        type:
-          - boolean
-          - 'null'
+        type: boolean
       ssh_enabled:
-        type:
-          - boolean
-          - 'null'
+        type: boolean
       timedout:
-        type:
-          - boolean
-          - 'null'
+        type: boolean
       usage_queued_at:
         format: date-time
         type: string
@@ -717,9 +688,7 @@ definitions:
           build-fork-prs:
             type: boolean
           fleet:
-            type:
-              - boolean
-              - 'null'
+            type: boolean
           junit:
             type: boolean
           oss:
@@ -744,9 +713,7 @@ definitions:
       hipchat_notify:
         $ref: '#/definitions/StringOrNull'
       hipchat_notify_prefs:
-        type:
-          - string
-          - 'null'
+        type: string
       hipchat_room:
         $ref: '#/definitions/StringOrNull'
       irc_channel:
@@ -840,9 +807,7 @@ definitions:
       - success
     type: string
   StringOrNull:
-    type:
-      - string
-      - 'null'
+    type: string
   Tag:
     description: |
       The tag to build. Default is null. Cannot be used with revision parameter.
@@ -886,9 +851,7 @@ definitions:
       basic_email_prefs:
         type: string
       bitbucket:
-        type:
-          - integer
-          - 'null'
+        type: integer
       bitbucket_authorized:
         type: boolean
       containers:
@@ -905,21 +868,15 @@ definitions:
           type: string
         type: array
       github_id:
-        type:
-          - integer
-          - 'null'
+        type: integer
       github_oauth_scopes:
         items:
           type: string
         type: array
       gravatar_id:
-        type:
-          - integer
-          - 'null'
+        type: integer
       heroku_api_key:
-        type:
-          - string
-          - 'null'
+        type: string
       in_beta_program:
         type: boolean
       login:
@@ -931,9 +888,7 @@ definitions:
       parallelism:
         type: integer
       plan:
-        type:
-          - string
-          - 'null'
+        type: string
       projects:
         type: object
       pusher_id:
