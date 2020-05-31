@@ -56,7 +56,6 @@ func New(s *Service) *API {
 // MeCall represents a provides information about the signed in user.
 type MeCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 }
 
@@ -64,7 +63,6 @@ type MeCall struct {
 func (r *API) Me() *MeCall {
 	c := &MeCall{
 		s:      r.s,
-		header: make(http.Header),
 		params: url.Values{},
 	}
 	return c
@@ -116,7 +114,6 @@ func (c *MeCall) Do() (*User, error) {
 // BuildCall represents a build summary for each of the last 30 builds for a single git repo.
 type BuildCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -133,7 +130,6 @@ type BuildCall struct {
 func (r *API) Build(username, project string) *BuildCall {
 	c := &BuildCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -208,7 +204,6 @@ func (c *BuildCall) Do() (*Build, error) {
 // TriggerBuildAndSummaryCall represents a triggers a new build, and returns the summary of the build.
 type TriggerBuildAndSummaryCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -221,7 +216,6 @@ type TriggerBuildAndSummaryCall struct {
 func (r *API) TriggerBuildAndSummary(username, project string, trigger *TriggerBuildSummary) *TriggerBuildAndSummaryCall {
 	c := &TriggerBuildAndSummaryCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -285,7 +279,6 @@ func (c *TriggerBuildAndSummaryCall) Do() (*BuildSummary, error) {
 // DeleteBuildCacheCall represents a clears the cache for a project.
 type DeleteBuildCacheCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -297,7 +290,6 @@ type DeleteBuildCacheCall struct {
 func (r *API) DeleteBuildCache(username, project string) *DeleteBuildCacheCall {
 	c := &DeleteBuildCacheCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -351,7 +343,6 @@ func (c *DeleteBuildCacheCall) Do() (*Response, error) {
 // ListCheckoutKeyCall represents a lists checkout keys.
 type ListCheckoutKeyCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -363,7 +354,6 @@ type ListCheckoutKeyCall struct {
 func (r *API) ListCheckoutKey(username, project string) *ListCheckoutKeyCall {
 	c := &ListCheckoutKeyCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -417,7 +407,6 @@ func (c *ListCheckoutKeyCall) Do() ([]*CheckoutKey, error) {
 // CreateCheckoutKeyCall represents a creates a new checkout key.
 type CreateCheckoutKeyCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -431,7 +420,6 @@ type CreateCheckoutKeyCall struct {
 func (r *API) CreateCheckoutKey(username, project string) *CreateCheckoutKeyCall {
 	c := &CreateCheckoutKeyCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -485,7 +473,6 @@ func (c *CreateCheckoutKeyCall) Do() (*CheckoutKey, error) {
 // DeleteCheckoutKeyCall represents a delete a checkout key.
 type DeleteCheckoutKeyCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -498,7 +485,6 @@ type DeleteCheckoutKeyCall struct {
 func (r *API) DeleteCheckoutKey(username, project, fingerprint string) *DeleteCheckoutKeyCall {
 	c := &DeleteCheckoutKeyCall{
 		s:           r.s,
-		header:      make(http.Header),
 		params:      url.Values{},
 		username:    username,
 		project:     project,
@@ -553,7 +539,6 @@ func (c *DeleteCheckoutKeyCall) Do() (*Response, error) {
 // CheckoutKeyCall represents a get a checkout key.
 type CheckoutKeyCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -566,7 +551,6 @@ type CheckoutKeyCall struct {
 func (r *API) CheckoutKey(username, project, fingerprint string) *CheckoutKeyCall {
 	c := &CheckoutKeyCall{
 		s:           r.s,
-		header:      make(http.Header),
 		params:      url.Values{},
 		username:    username,
 		project:     project,
@@ -621,7 +605,6 @@ func (c *CheckoutKeyCall) Do() (*CheckoutKey, error) {
 // ListProjectEnvVarsCall represents a lists the environment variables for project.
 type ListProjectEnvVarsCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -633,7 +616,6 @@ type ListProjectEnvVarsCall struct {
 func (r *API) ListProjectEnvVars(username, project string) *ListProjectEnvVarsCall {
 	c := &ListProjectEnvVarsCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -687,7 +669,6 @@ func (c *ListProjectEnvVarsCall) Do() ([]Envvar, error) {
 // CreateProjectEnvVarCall represents a creates a new environment variable.
 type CreateProjectEnvVarCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -699,7 +680,6 @@ type CreateProjectEnvVarCall struct {
 func (r *API) CreateProjectEnvVar(username, project string) *CreateProjectEnvVarCall {
 	c := &CreateProjectEnvVarCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -753,7 +733,6 @@ func (c *CreateProjectEnvVarCall) Do() (*Envvar, error) {
 // DeleteEnvVarCall represents a deletes the environment variable named.
 type DeleteEnvVarCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -766,7 +745,6 @@ type DeleteEnvVarCall struct {
 func (r *API) DeleteEnvVar(username, project, name string) *DeleteEnvVarCall {
 	c := &DeleteEnvVarCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -821,7 +799,6 @@ func (c *DeleteEnvVarCall) Do() (*Response, error) {
 // HiddenEnvVarCall represents a gets the hidden value of environment variable.
 type HiddenEnvVarCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -834,7 +811,6 @@ type HiddenEnvVarCall struct {
 func (r *API) HiddenEnvVar(username, project, name string) *HiddenEnvVarCall {
 	c := &HiddenEnvVarCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -890,7 +866,6 @@ func (c *HiddenEnvVarCall) Do() (*Envvar, error) {
 // CreateSSHKeyCall represents a create an ssh key used to access external systems that require SSH key-based authentication.
 type CreateSSHKeyCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -903,7 +878,6 @@ type CreateSSHKeyCall struct {
 func (r *API) CreateSSHKey(username, project string, sshKey SSHKey) *CreateSSHKeyCall {
 	c := &CreateSSHKeyCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -964,7 +938,6 @@ func (c *CreateSSHKeyCall) Do() (*Response, error) {
 // TriggerNewBuildCall represents a triggers a new build, returns a summary of the build.
 type TriggerNewBuildCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -980,7 +953,6 @@ type TriggerNewBuildCall struct {
 func (r *API) TriggerNewBuild(username, project, branch string) *TriggerNewBuildCall {
 	c := &TriggerNewBuildCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -1054,7 +1026,6 @@ func (c *TriggerNewBuildCall) Do() (*Build, error) {
 // BuildDetailCall represents a full details for a single build. The response includes all of the fields from the build summary.
 type BuildDetailCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -1072,7 +1043,6 @@ type BuildDetailCall struct {
 func (r *API) BuildDetail(username, project string, buildNum int) *BuildDetailCall {
 	c := &BuildDetailCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -1127,7 +1097,6 @@ func (c *BuildDetailCall) Do() (*BuildDetail, error) {
 // ListArtifactsCall represents a list the artifacts produced by a given build.
 type ListArtifactsCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -1140,7 +1109,6 @@ type ListArtifactsCall struct {
 func (r *API) ListArtifacts(username, project string, buildNum int) *ListArtifactsCall {
 	c := &ListArtifactsCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -1195,7 +1163,6 @@ func (c *ListArtifactsCall) Do() ([]Artifact, error) {
 // CancelBuildCall represents a cancels the build, returns a summary of the build.
 type CancelBuildCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -1208,7 +1175,6 @@ type CancelBuildCall struct {
 func (r *API) CancelBuild(username, project string, buildNum int) *CancelBuildCall {
 	c := &CancelBuildCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -1263,7 +1229,6 @@ func (c *CancelBuildCall) Do() (*Build, error) {
 // RetryBuildCall represents a retries the build, returns a summary of the new build.
 type RetryBuildCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -1276,7 +1241,6 @@ type RetryBuildCall struct {
 func (r *API) RetryBuild(username, project string, buildNum int) *RetryBuildCall {
 	c := &RetryBuildCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -1331,7 +1295,6 @@ func (c *RetryBuildCall) Do() (*Build, error) {
 // TestMetadataCall represents a provides test metadata for a build.
 type TestMetadataCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// path fields
@@ -1344,7 +1307,6 @@ type TestMetadataCall struct {
 func (r *API) TestMetadata(username, project string, buildNum int) *TestMetadataCall {
 	c := &TestMetadataCall{
 		s:        r.s,
-		header:   make(http.Header),
 		params:   url.Values{},
 		username: username,
 		project:  project,
@@ -1399,7 +1361,6 @@ func (c *TestMetadataCall) Do() (*Tests, error) {
 // ListProjectCall represents a list of all the projects you're following on CircleCI, with build information organized by branch.
 type ListProjectCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 }
 
@@ -1407,7 +1368,6 @@ type ListProjectCall struct {
 func (r *API) ListProject() *ListProjectCall {
 	c := &ListProjectCall{
 		s:      r.s,
-		header: make(http.Header),
 		params: url.Values{},
 	}
 	return c
@@ -1459,7 +1419,6 @@ func (c *ListProjectCall) Do() ([]*Project, error) {
 // RecentBuildsCall represents a build summary for each of the last 30 recent builds, ordered by build_num.
 type RecentBuildsCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 
 	// query fields
@@ -1471,7 +1430,6 @@ type RecentBuildsCall struct {
 func (r *API) RecentBuilds() *RecentBuildsCall {
 	c := &RecentBuildsCall{
 		s:      r.s,
-		header: make(http.Header),
 		params: url.Values{},
 		limit:  30, // limit is 30 by default
 	}
@@ -1538,7 +1496,6 @@ func (c *RecentBuildsCall) Do() ([]*Build, error) {
 // AddHerokuKeyCall represents a adds your Heroku API key to CircleCI, takes apikey as form param name.
 type AddHerokuKeyCall struct {
 	s      *Service
-	header http.Header
 	params url.Values
 }
 
@@ -1546,7 +1503,6 @@ type AddHerokuKeyCall struct {
 func (r *API) AddHerokuKey() *AddHerokuKeyCall {
 	c := &AddHerokuKeyCall{
 		s:      r.s,
-		header: make(http.Header),
 		params: url.Values{},
 	}
 	return c
