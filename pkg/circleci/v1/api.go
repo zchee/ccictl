@@ -1512,6 +1512,12 @@ func (c *RecentBuildsCall) Offset(offset int) *RecentBuildsCall {
 	return c
 }
 
+// Shallow sets shallow.
+func (c *RecentBuildsCall) Shallow(shallow bool) *RecentBuildsCall {
+	c.params.Add("shallow", fmt.Sprintf("%v", shallow))
+	return c
+}
+
 // Context sets context.
 func (c *RecentBuildsCall) Context(ctx context.Context) *RecentBuildsCall {
 	c.s.ctx = ctx
