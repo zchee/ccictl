@@ -5,10 +5,9 @@
 package v1
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
-
-	json "github.com/goccy/go-json"
 )
 
 // Artifact represents a Artifact.
@@ -427,7 +426,7 @@ type User struct {
 	AnalyticsID         string                 `json:"analytics_id,omitempty"`
 	AvatarURL           string                 `json:"avatar_url,omitempty"`
 	BasicEmailPrefs     string                 `json:"basic_email_prefs,omitempty"`
-	Bitbucket           int32                  `json:"bitbucket,omitempty"`
+	Bitbucket           map[string]string      `json:"bitbucket,omitempty"`
 	BitbucketAuthorized bool                   `json:"bitbucket_authorized,omitempty"`
 	Containers          int32                  `json:"containers,omitempty"`
 	CreatedAt           time.Time              `json:"created_at,omitempty"`
