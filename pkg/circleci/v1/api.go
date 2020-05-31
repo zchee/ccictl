@@ -176,6 +176,7 @@ func (c *BuildCall) Do() (*Build, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -251,6 +252,7 @@ func (c *TriggerBuildAndSummaryCall) Do() (*BuildSummary, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -315,6 +317,7 @@ func (c *DeleteBuildCacheCall) Do() (*Response, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -379,6 +382,7 @@ func (c *ListCheckoutKeyCall) Do() ([]*CheckoutKey, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -445,6 +449,7 @@ func (c *CreateCheckoutKeyCall) Do() (*CheckoutKey, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -511,6 +516,7 @@ func (c *DeleteCheckoutKeyCall) Do() (*Response, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -577,6 +583,7 @@ func (c *CheckoutKeyCall) Do() (*CheckoutKey, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -641,6 +648,7 @@ func (c *ListProjectEnvVarsCall) Do() ([]Envvar, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -705,6 +713,7 @@ func (c *CreateProjectEnvVarCall) Do() (*Envvar, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -771,6 +780,7 @@ func (c *DeleteEnvVarCall) Do() (*Response, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -838,6 +848,7 @@ func (c *HiddenEnvVarCall) Do() (*Envvar, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -909,6 +920,7 @@ func (c *CreateSSHKeyCall) Do() (*Response, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept-Encoding", "application/json")
 
@@ -997,6 +1009,7 @@ func (c *TriggerNewBuildCall) Do() (*Build, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept-Encoding", "application/json")
 
@@ -1069,6 +1082,7 @@ func (c *BuildDetailCall) Do() (*BuildDetail, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1135,6 +1149,7 @@ func (c *ListArtifactsCall) Do() ([]Artifact, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1201,6 +1216,7 @@ func (c *CancelBuildCall) Do() (*Build, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1267,6 +1283,7 @@ func (c *RetryBuildCall) Do() (*Build, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1333,6 +1350,7 @@ func (c *TestMetadataCall) Do() (*Tests, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1391,6 +1409,7 @@ func (c *ListProjectCall) Do() ([]*Project, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1468,6 +1487,7 @@ func (c *RecentBuildsCall) Do() ([]*Build, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
@@ -1526,6 +1546,7 @@ func (c *AddHerokuKeyCall) Do() (*Response, error) {
 		return nil, err
 	}
 
+	req.Header.Set("User-Agent", c.s.userAgent())
 	req.Header.Set("Accept-Encoding", "application/json")
 
 	resp, err := c.s.client.Do(req)
