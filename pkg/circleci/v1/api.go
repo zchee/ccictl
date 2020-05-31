@@ -98,13 +98,8 @@ func (c *MeCall) Do() (*User, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result User
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -189,13 +184,8 @@ func (c *BuildCall) Do() (*Build, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Build
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -265,13 +255,8 @@ func (c *TriggerBuildAndSummaryCall) Do() (*BuildSummary, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result BuildSummary
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -330,13 +315,8 @@ func (c *DeleteBuildCacheCall) Do() (*Response, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Response
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -395,13 +375,8 @@ func (c *ListCheckoutKeyCall) Do() ([]*CheckoutKey, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result []*CheckoutKey
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -462,13 +437,8 @@ func (c *CreateCheckoutKeyCall) Do() (*CheckoutKey, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result CheckoutKey
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -529,13 +499,8 @@ func (c *DeleteCheckoutKeyCall) Do() (*Response, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Response
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -596,13 +561,8 @@ func (c *CheckoutKeyCall) Do() (*CheckoutKey, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result CheckoutKey
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -661,13 +621,8 @@ func (c *ListProjectEnvVarsCall) Do() ([]Envvar, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result []Envvar
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -726,13 +681,8 @@ func (c *CreateProjectEnvVarCall) Do() (*Envvar, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Envvar
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -793,13 +743,8 @@ func (c *DeleteEnvVarCall) Do() (*Response, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Response
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -861,13 +806,8 @@ func (c *HiddenEnvVarCall) Do() (*Envvar, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Envvar
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -934,13 +874,8 @@ func (c *CreateSSHKeyCall) Do() (*Response, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Response
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1023,13 +958,8 @@ func (c *TriggerNewBuildCall) Do() (*Build, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Build
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1095,13 +1025,8 @@ func (c *BuildDetailCall) Do() (*BuildDetail, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result BuildDetail
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1162,13 +1087,8 @@ func (c *ListArtifactsCall) Do() ([]Artifact, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result []Artifact
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1229,13 +1149,8 @@ func (c *CancelBuildCall) Do() (*Build, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Build
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1296,13 +1211,8 @@ func (c *RetryBuildCall) Do() (*Build, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Build
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1363,13 +1273,8 @@ func (c *TestMetadataCall) Do() (*Tests, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Tests
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1422,13 +1327,8 @@ func (c *ListProjectCall) Do() ([]*Project, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result []*Project
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1500,13 +1400,8 @@ func (c *RecentBuildsCall) Do() ([]*Build, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result []*Build
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
@@ -1559,13 +1454,8 @@ func (c *AddHerokuKeyCall) Do() (*Response, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var result Response
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, err
 	}
 
