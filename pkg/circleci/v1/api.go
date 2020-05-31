@@ -90,6 +90,11 @@ func (c *MeCall) Do() (*User, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -176,6 +181,11 @@ func (c *BuildCall) Do() (*Build, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -247,6 +257,11 @@ func (c *TriggerBuildAndSummaryCall) Do() (*BuildSummary, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -307,6 +322,11 @@ func (c *DeleteBuildCacheCall) Do() (*Response, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -367,6 +387,11 @@ func (c *ListCheckoutKeyCall) Do() ([]*CheckoutKey, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -429,6 +454,11 @@ func (c *CreateCheckoutKeyCall) Do() (*CheckoutKey, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -491,6 +521,11 @@ func (c *DeleteCheckoutKeyCall) Do() (*Response, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -553,6 +588,11 @@ func (c *CheckoutKeyCall) Do() (*CheckoutKey, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -613,6 +653,11 @@ func (c *ListProjectEnvVarsCall) Do() ([]Envvar, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -673,6 +718,11 @@ func (c *CreateProjectEnvVarCall) Do() (*Envvar, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -735,6 +785,11 @@ func (c *DeleteEnvVarCall) Do() (*Response, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -798,6 +853,11 @@ func (c *HiddenEnvVarCall) Do() (*Envvar, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -866,6 +926,11 @@ func (c *CreateSSHKeyCall) Do() (*Response, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -950,6 +1015,11 @@ func (c *TriggerNewBuildCall) Do() (*Build, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1017,6 +1087,11 @@ func (c *BuildDetailCall) Do() (*BuildDetail, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1079,6 +1154,11 @@ func (c *ListArtifactsCall) Do() ([]Artifact, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1141,6 +1221,11 @@ func (c *CancelBuildCall) Do() (*Build, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1203,6 +1288,11 @@ func (c *RetryBuildCall) Do() (*Build, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1265,6 +1355,11 @@ func (c *TestMetadataCall) Do() (*Tests, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1319,6 +1414,11 @@ func (c *ListProjectCall) Do() ([]*Project, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1392,6 +1492,11 @@ func (c *RecentBuildsCall) Do() ([]*Build, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -1446,6 +1551,11 @@ func (c *AddHerokuKeyCall) Do() (*Response, error) {
 
 	resp, err := c.s.client.Do(req)
 	if err != nil {
+		select {
+		case <-c.s.ctx.Done():
+			return nil, c.s.ctx.Err()
+		default:
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
