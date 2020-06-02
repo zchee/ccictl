@@ -21,6 +21,7 @@ func NewCommand(ctx context.Context, args []string) *cobra.Command {
 
 	svc := circleci_v1.NewService(ctx, nil)
 	c.AddCommand(NewMeCmd(svc, args...))
+	c.AddCommand(NewRecentBuildCmd(svc, args...))
 
 	return c
 }
