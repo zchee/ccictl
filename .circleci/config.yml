@@ -1,0 +1,38 @@
+version: 2.1
+
+orbs:
+  go: cci-orb/golang@dev:0.1.9       # https://circleci.com/orbs/registry/orb/cci-orb/golang
+  codecov: codecov/codecov@volatile  # https://circleci.com/orbs/registry/orb/codecov/codecov
+
+jobs:
+  coverage:
+    parameters:
+      platform:
+        type: string
+    executor: "go/<< parameters.platform >>"
+    working_directory: ~/go/src/github.com/zchee/ccictl
+    resource_class: medium
+    steps:
+      - checkout
+      - run: echo 'export GOPATH="$HOME/go"' >> $BASH_ENV
+      - go/install:
+          version: 1.14.4
+      - go/gomod
+      - run:
+          name: Run test
+          command: |
+            CGO_ENABLED=1 go test -v -mod=vendor -tags='osusergo,netgo,static,static_build' -trimpath -gcflags="all=-trimpath=${GOPATH}"  -ldflags='all="-extldflags=-fno-PIC -static"' -asmflags="all=-trimpath=$GOPATH" -covermode=atomic -coverpkg=github.com/zchee/ccictl/... -coverprofile=coverage.out
+      - codecov/upload:
+          file: "coverage.out"
+          flags: "<< parameters.platform >>"
+          when: on_success
+
+workflows:
+  version: 2
+  workflows:
+    jobs:
+      - coverage:
+          matrix:
+            parameters:
+              platform: ["linux", "macos"]
+          context: org-global
