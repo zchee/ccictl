@@ -268,7 +268,7 @@ paths:
           type: string
         required: false
         allowEmptyValue: true
-      - in: path
+      - in: query
         name: start-date
         description: Include only executions that started at or after this date. This must be specified if an end-date is provided.
         schema:
@@ -276,7 +276,7 @@ paths:
           format: date-time
         required: true
         example: '2020-05-14T21:21:36Z'
-      - in: path
+      - in: query
         name: end-date
         description: Include only executions that started before this date. This date can be at most 90 days after the start-date.
         schema:
@@ -541,7 +541,7 @@ paths:
           type: string
         required: false
         allowEmptyValue: true
-      - in: path
+      - in: query
         name: start-date
         description: Include only executions that started at or after this date. This must be specified if an end-date is provided.
         schema:
@@ -549,7 +549,7 @@ paths:
           format: date-time
         required: true
         example: '2020-05-14T21:21:36Z'
-      - in: path
+      - in: query
         name: end-date
         description: Include only executions that started before this date. This date can be at most 90 days after the start-date.
         schema:
